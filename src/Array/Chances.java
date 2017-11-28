@@ -29,15 +29,15 @@ public class Chances {
         Random random = new Random();
         values = new short[maxNumber];
         sums = new int[maxNumber];
-        values[0] = (short) random.nextInt(30000);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
+        values[0] = (short) random.nextInt(32000);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
         sums[0] = values[0];
         for (int i = 1; i < values.length; i++) {
-            values[i] = (short) random.nextInt(30000);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
+            values[i] = (short) random.nextInt(32000);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
             sums[i] += sums[i - 1] + values[i];
         }
     }
 
-    public int nextNumber(){
+    public short nextNumber(){
         Random random = new Random();
         int v = random.nextInt(sums[sums.length - 1]);
         return search(v);
