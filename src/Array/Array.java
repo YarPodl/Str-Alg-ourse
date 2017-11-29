@@ -1,10 +1,10 @@
 package Array;
 
 public class Array {
-    short[] values;
+    public short[] values;
 
     public Array(short[] initial) {
-        values = initial.clone();
+        values = initial;
     }
     public short search(short key){
         int i = 0;
