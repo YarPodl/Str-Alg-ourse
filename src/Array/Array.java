@@ -12,8 +12,8 @@ public class Array {
             while (key != values[i]){
                 ++i;
             }
-            short temp = values[i - 1];
-            values[i - 1] = values[i];
+            short temp = values[i - 3];
+            values[i - 3] = values[i];
             values[i] = temp;
             return values[i];
         }

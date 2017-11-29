@@ -34,6 +34,9 @@ public class Main {
     }
 
     private static void testArray2() {
+        /*
+            Для шага 3 порог после 100000000
+         */
         Chances chances = new Chances(maxNumber);
         short[] t = new short[maxNumber];
         for (short i = 0; i < maxNumber; i++) {
@@ -41,31 +44,32 @@ public class Main {
         }
         Array array = new Array(t);
 
+        for (int j1 = 0; j1 < 200; j1++) {
+            for (int i = 0; i < 1000000; i++) {
 
-        for (int i = 0; i < 100000000; i++) {
-
-            array.search(chances.nextNumber());
-
-        }
-        short[][] s = new short[2][maxNumber];
-        s[0] = chances.values;
-        for (short l = 0; l < maxNumber; l++) {
-            s[1][l] = l;
-        }
-        sort(s);
-        int delta = 0;
-        for (int i = 0; i < maxNumber; i++) {
-            int j, k;
-            for (j = 0; array.values[j] != i; j++) {
+                array.search(chances.nextNumber());
 
             }
-
-            for (k = 0; s[1][k] != i; k++) {
-
+            short[][] s = new short[2][maxNumber];
+            s[0] = Arrays.copyOfRange(chances.values, 0, chances.values.length);
+            for (short l = 0; l < maxNumber; l++) {
+                s[1][l] = l;
             }
-            delta += Math.abs(j-k);
+            sort(s);
+            int delta = 0;
+            for (int i = 0; i < maxNumber; i++) {
+                int j, k;
+                for (j = 0; array.values[j] != i; j++) {
+
+                }
+
+                for (k = 0; s[1][k] != i; k++) {
+
+                }
+                delta += Math.abs(j - k);
+            }
+            System.out.println(delta);
         }
-        System.out.println(delta);
 
 
     }
