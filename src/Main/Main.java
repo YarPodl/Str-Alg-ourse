@@ -1,6 +1,6 @@
 package Main;
 import Array.Chances;
-import Array.Array;
+import Array.ArraySwap;
 
 import java.util.Arrays;
 
@@ -22,11 +22,11 @@ public class Main {
         for (short i = 0; i < maxNumber; i++) {
             t[i] = i;
         }
-        Array array = new Array(t);
+        ArraySwap arraySwap = new ArraySwap(t);
         for (int i = 0; i < 100; i++) {
             long temp = System.nanoTime();
             for (int j = 0; j < count; j++) {
-                array.search(chances.nextNumber());
+                arraySwap.search(chances.nextNumber());
             }
             System.out.println((System.nanoTime() - temp)/count);
         }
@@ -42,12 +42,12 @@ public class Main {
         for (short i = 0; i < maxNumber; i++) {
             t[i] = i;
         }
-        Array array = new Array(t);
+        ArraySwap arraySwap = new ArraySwap(t);
 
         for (int j1 = 0; j1 < 200; j1++) {
             for (int i = 0; i < 1000000; i++) {
 
-                array.search(chances.nextNumber());
+                arraySwap.search(chances.nextNumber());
 
             }
             short[][] s = new short[2][maxNumber];
@@ -59,7 +59,7 @@ public class Main {
             int delta = 0;
             for (int i = 0; i < maxNumber; i++) {
                 int j, k;
-                for (j = 0; array.values[j] != i; j++) {
+                for (j = 0; arraySwap.values[j] != i; j++) {
 
                 }
 

@@ -1,9 +1,10 @@
 package Array;
 
-public class Array {
+public class ArraySwap {
     public short[] values;
 
-    public Array(short[] initial) {
+    int shift = 1;
+    public ArraySwap(short[] initial) {
         values = initial;
     }
     public short search(short key){
@@ -12,8 +13,8 @@ public class Array {
             while (key != values[i]){
                 ++i;
             }
-            short temp = values[i - 3];
-            values[i - 3] = values[i];
+            short temp = values[i - shift];
+            values[i - shift] = values[i];
             values[i] = temp;
             return values[i];
         }
