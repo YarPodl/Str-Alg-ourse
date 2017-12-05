@@ -28,7 +28,7 @@ public class ArrayInsert {
                 current = current.next;
             }
         }
-        catch (Exception e){}
+        catch (Exception ignored){}
         if (current == null){
             return Short.MIN_VALUE;
         }

@@ -21,11 +21,19 @@ public class Chances {
     }
     */
 
-    public short values[];
-    public int sums[];
-    public short maxNumber;
+    public short values[];  // хранит вероятнсти
+    public short[] ideal;          // идеальные места для цифр
+    public int sums[];      // интервалы для вероятности
+    public short maxNumber; // максимально допустимое число
     public Chances(short maxNumber) {
         this.maxNumber = maxNumber;
+        ideal = new short[maxNumber];
+        for (short i = 0; i < maxNumber; i++) {
+            ideal[i] = i;
+        }
+
+
+
         Random random = new Random();
         values = new short[maxNumber];
         sums = new int[maxNumber];
@@ -35,6 +43,20 @@ public class Chances {
             values[i] = (short) random.nextInt(32000);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
             sums[i] += sums[i - 1] + values[i];
         }
+        createIdeal();
+    }
+
+    public int getDelta(short[] massive){
+        int delta = 0;
+        for (int i = 0; i < maxNumber; i++) {
+            int j;
+            j = 0;
+            while (massive[j] != i) {
+                j++;
+            }
+            delta += Math.abs(j - ideal[i]);
+        }
+        return delta;
     }
 
     public short nextNumber(){
@@ -46,7 +68,7 @@ public class Chances {
     private short search(int v){
         int r = sums.length - 1;
         int l = 0;
-        int i = 0;
+        int i;
         while (l < r){
             i = (l + r) >> 1;
             if (v <= sums[i]){
@@ -59,4 +81,28 @@ public class Chances {
         return (short) r;
     }
 
+    private void createIdeal() {
+        short[][] massive = new short[][]
+                values.clone();
+        int j = massive.length - 1;
+        while (j > 0) {
+            int M = massive[0];
+            int k = 0;
+            int i = 1;
+            while (i <= j) {
+                if (M > massive[i]) {
+                    M = massive[i];
+                    k = i;
+                }
+                i++;
+            }
+            short tmp = massive[j];
+            massive[j] = massive[k];
+            massive[k] = tmp;
+            ideal[tmp] = (short) j;
+            j--;
+        }
+
+
+    }
 }

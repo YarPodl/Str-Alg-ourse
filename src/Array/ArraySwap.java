@@ -3,6 +3,10 @@ package Array;
 public class ArraySwap {
     public short[] values;
 
+    public void setShift(int shift) {
+        this.shift = shift;
+    }
+
     int shift = 1;
     public ArraySwap(short[] initial) {
         values = initial;
@@ -20,7 +24,7 @@ public class ArraySwap {
         }
         catch (Exception e){
             if (i < 0){
-                return values[i];   // если найденый элемент - первый
+                return values[i];   // если найденый элемент - близко к началу
             }
             return -1;  // если элемент не найден
         }

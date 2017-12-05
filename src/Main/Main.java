@@ -44,58 +44,21 @@ public class Main {
         }
         ArraySwap arraySwap = new ArraySwap(t);
 
+        arraySwap.setShift(3);
         for (int j1 = 0; j1 < 200; j1++) {
             for (int i = 0; i < 1000000; i++) {
 
                 arraySwap.search(chances.nextNumber());
 
             }
-            short[][] s = new short[2][maxNumber];
-            s[0] = Arrays.copyOfRange(chances.values, 0, chances.values.length);
-            for (short l = 0; l < maxNumber; l++) {
-                s[1][l] = l;
-            }
-            sort(s);
-            int delta = 0;
-            for (int i = 0; i < maxNumber; i++) {
-                int j, k;
-                for (j = 0; arraySwap.values[j] != i; j++) {
 
-                }
-
-                for (k = 0; s[1][k] != i; k++) {
-
-                }
-                delta += Math.abs(j - k);
-            }
-            System.out.println(delta);
+            System.out.println(chances.getDelta(arraySwap.values));
         }
 
 
     }
 
-    private static void sort(short[][] massive) {
-        int j = massive[0].length - 1;
-        while (j > 0) {
-            int M = massive[0][0];
-            int k = 0;
-            int i = 1;
-            while (i <= j) {
-                if (M > massive[0][i]) {
-                    M = massive[0][i];
-                    k = i;
-                }
-                i++;
-            }
-            short tmp = massive[0][j];
-            massive[0][j] = massive[0][k];
-            massive[0][k] = tmp;
-            tmp = massive[1][j];
-            massive[1][j] = massive[1][k];
-            massive[1][k] = tmp;
-            j--;
-        }
-    }
+
 
     private static void testChances(){
         Chances chances = new Chances(maxNumber);
