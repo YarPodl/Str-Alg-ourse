@@ -2,7 +2,7 @@ package Array;
 
 import java.util.ArrayList;
 
-public class ArrayInsert {
+public class ArrayInsert implements arraySortingItself{
     MyList values;
 
     public ArrayInsert(short[] initial) {

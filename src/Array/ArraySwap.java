@@ -1,7 +1,8 @@
 package Array;
 
-public class ArraySwap {
+public class ArraySwap implements arraySortingItself{
     public short[] values;
+
 
     public void setShift(int shift) {
         this.shift = shift;
@@ -20,14 +21,12 @@ public class ArraySwap {
             short temp = values[i - shift];
             values[i - shift] = values[i];
             values[i] = temp;
-            return values[i];
         }
-        catch (Exception e){
-            if (i < 0){
-                return values[i];   // если найденый элемент - близко к началу
-            }
-            return -1;  // если элемент не найден
+        catch (Exception ignored){}
+        if (i >= values.length){
+            return -1;      // если элемент не найден
         }
+        return values[i];   // если найденый элемент - близко к началу
     }
     public long testSearch(short key){
         long time = System.nanoTime();

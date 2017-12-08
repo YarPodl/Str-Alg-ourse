@@ -22,7 +22,7 @@ public class Chances {
     */
 
     public short values[];  // хранит вероятнсти
-    public short[] ideal;          // идеальные места для цифр
+    public short[] ideal;   // идеальные места для цифр
     public int sums[];      // интервалы для вероятности
     public short maxNumber; // максимально допустимое число
     public Chances(short maxNumber) {
@@ -51,10 +51,15 @@ public class Chances {
         for (int i = 0; i < maxNumber; i++) {
             int j;
             j = 0;
-            while (massive[j] != i) {
-                j++;
-            }
-            delta += Math.abs(j - ideal[i]);
+                while (massive[j] != i) {
+                    j++;
+                    /*
+                    if (j==10000){
+                        System.out.println();
+                    }
+                    */
+                }
+                delta += Math.abs(j - ideal[i]);
         }
         return delta;
     }
@@ -82,27 +87,34 @@ public class Chances {
     }
 
     private void createIdeal() {
-        short[][] massive = new short[][]
-                values.clone();
-        int j = massive.length - 1;
+        short[][] massive = new short[2][maxNumber];
+        massive[0] = values.clone();
+        for (short i = 0; i < maxNumber; i++) {
+            massive[1][i] = i;
+        }
+        int j = massive[0].length - 1;
         while (j > 0) {
-            int M = massive[0];
+            int M = massive[0][0];
             int k = 0;
             int i = 1;
             while (i <= j) {
-                if (M > massive[i]) {
-                    M = massive[i];
+                if (M > massive[0][i]) {
+                    M = massive[0][i];
                     k = i;
                 }
                 i++;
             }
-            short tmp = massive[j];
-            massive[j] = massive[k];
-            massive[k] = tmp;
-            ideal[tmp] = (short) j;
+            short tmp = massive[0][j];
+            massive[0][j] = massive[0][k];
+            massive[0][k] = tmp;
+            tmp = massive[1][j];
+            massive[1][j] = massive[1][k];
+            massive[1][k] = tmp;
             j--;
         }
 
-
+        for (short i = 0; i < maxNumber; i++) {
+            ideal[massive[1][i]] = i;
+        }
     }
 }
