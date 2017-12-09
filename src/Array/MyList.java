@@ -29,6 +29,7 @@ public class MyList {
         }
         else {
             last.next = newElement;
+            last = newElement;
         }
     }
 }

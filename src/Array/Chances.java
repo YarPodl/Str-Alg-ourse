@@ -46,23 +46,7 @@ public class Chances {
         createIdeal();
     }
 
-    public int getDelta(short[] massive){
-        int delta = 0;
-        for (int i = 0; i < maxNumber; i++) {
-            int j;
-            j = 0;
-                while (massive[j] != i) {
-                    j++;
-                    /*
-                    if (j==10000){
-                        System.out.println();
-                    }
-                    */
-                }
-                delta += Math.abs(j - ideal[i]);
-        }
-        return delta;
-    }
+
 
     public short nextNumber(){
         Random random = new Random();

@@ -1,6 +1,8 @@
 package Main;
+import Array.ArrayInsert;
 import Array.Chances;
 import Array.ArraySwap;
+import Array.arraySortingItself;
 
 import java.util.Arrays;
 
@@ -42,17 +44,16 @@ public class Main {
         for (short i = 0; i < maxNumber; i++) {
             t[i] = i;
         }
-        ArraySwap arraySwap = new ArraySwap(t);
+        arraySortingItself array = new ArrayInsert(t);
 
-        arraySwap.setShift(3);
         for (int j1 = 0; j1 < 200; j1++) {
-            for (int i = 0; i < 1000000; i++) {
+            System.out.println(array.getDelta(chances));
+            for (int i = 0; i < 10000; i++) {
 
-                arraySwap.search(chances.nextNumber());
+                array.search(chances.nextNumber());
 
             }
 
-            System.out.println(chances.getDelta(arraySwap.values));
         }
 
 

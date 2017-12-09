@@ -1,7 +1,9 @@
 package Main;
 
+import Array.ArrayInsert;
 import Array.ArraySwap;
 import Array.Chances;
+import Array.arraySortingItself;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,31 +56,47 @@ public class FormFX extends Application {
         chart.getData().add(series);
 
 
+        Pane pane = new VBox();
+        Pane controlPane = new HBox(20);
+
+        ComboBox comboBox = new ComboBox();
+        controlPane.getChildren().add(comboBox);
+        comboBox.getItems().addAll("Обмен элементов", "Сдвиг элемента");
+        comboBox.getSelectionModel().select(0);
 
 
-        Chances chances = new Chances(maxNumber);
-        short[] t = new short[maxNumber];
-        for (short i = 0; i < maxNumber; i++) {
-            t[i] = i;
-        }
-        ArraySwap arraySwap = new ArraySwap(t);
 
-        arraySwap.setShift(3);
+
+        //arraySwap.setShift(3);
 
 
         class requests extends Task{
             @Override
             public Void call() {
-                for (int j1 = 0; j1 < 100; j1++) {
-                    for (int i = 0; i < 500000; i++) {
+                Chances chances = new Chances(maxNumber);
+                short[] t = new short[maxNumber];
+                for (short i = 0; i < maxNumber; i++) {
+                    t[i] = i;
+                }
+                arraySortingItself arraySwap = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex());
+                Platform.runLater(() -> {
+                    dates.clear();
+                    dates.add(new XYChart.Data(0, arraySwap.getDelta(chances)));
+                });
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for (int j1 = 1; j1 < 100; j1++) {
+
+                    for (int i = 0; i < 1000; i++) {
                         arraySwap.search(chances.nextNumber());
 
                     }
-                    int delta = chances.getDelta(arraySwap.values);
-                    int finalJ = j1;
-                    Platform.runLater(()->{
-                        dates.add(new XYChart.Data(finalJ, delta));
-                    });
+                    int delta = arraySwap.getDelta(chances);
+                    int finalJ1 = j1;
+                    Platform.runLater(()-> dates.add(new XYChart.Data(finalJ1, delta)));
 
                 }
                 return null;
@@ -97,14 +115,11 @@ public class FormFX extends Application {
 
 
 
-        Pane pane = new VBox();
-        Pane controlPane = new HBox();
 
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Обмен элементов", "Сдвиг элемента");
+
         Button button = new Button("Запуск");
         controlPane.getChildren().add(button);
-        controlPane.setPadding(new Insets(10));
+        controlPane.setPadding(new Insets(20, 20, 10, 20));
         button.setOnAction((event)-> new Thread(new requests()).start());
         pane.getChildren().add(controlPane);
         pane.getChildren().add(chart);
