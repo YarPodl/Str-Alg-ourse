@@ -27,6 +27,7 @@ public class FormFX extends Application {
     private static int countOfTact = 100;
     private static int lengthOfTact = 100000;
     private static Thread thread;
+    private static int shift;
 
 
 
@@ -81,6 +82,17 @@ public class FormFX extends Application {
                 }
             });
         }};
+        TextField textFieldShift = new TextField("1"){{
+            textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!pattern.matcher(newValue).matches()) {
+                    setText(oldValue);
+                }
+                try {
+                    shift = Integer.parseInt(getText());
+                } catch (NumberFormatException ignored) {
+                }
+            });
+        }};
 
 
 
@@ -89,13 +101,15 @@ public class FormFX extends Application {
 
 
         class requests extends Task{
-            private requests(LineChart<Number, Number> chart, Button buttonStart, Button buttonCancel) {
+            private requests(LineChart<Number, Number> chart, Button buttonStart, Button buttonCancel, int param) {
                 super();
                 this.chart = chart;
                 this.buttonStart = buttonStart;
                 this.buttonCancel = buttonCancel;
+                this.param = param;
             }
 
+            private int param;
             private LineChart<Number, Number> chart;
             private Button buttonStart;
             private Button buttonCancel;
@@ -108,7 +122,7 @@ public class FormFX extends Application {
                 for (short i = 0; i < maxNumber; i++) {
                     t[i] = i;
                 }
-                arraySortingItself array = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex());
+                arraySortingItself array = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex(), param);
 
 
                 XYChart.Series series = new XYChart.Series();
@@ -153,7 +167,7 @@ public class FormFX extends Application {
         Button buttonClear = new Button("Очистить");
 
         buttonStart.setOnAction((event)-> {
-            thread = new Thread(new requests(chart, buttonStart, buttonCancel));
+            thread = new Thread(new requests(chart, buttonStart, buttonCancel, shift));
             thread.start();
         });
         buttonCancel.setOnAction((event)-> {
@@ -175,6 +189,10 @@ public class FormFX extends Application {
         controlPane.getChildren().add(new VBox(){{
             getChildren().add(new Label("Количество запросов в такте"));
             getChildren().add(textFieldCount);
+        }});
+        controlPane.getChildren().add(new VBox(){{
+            getChildren().add(new Label("Сдвиг"));
+            getChildren().add(textFieldShift);
         }});
 
         controlPane.setPadding(new Insets(20, 20, 10, 20));

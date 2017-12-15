@@ -1,10 +1,8 @@
 package Main;
-import Array.ArrayInsert;
+import Array.ArrayInsertInBeg;
 import Array.Chances;
 import Array.ArraySwap;
 import Array.arraySortingItself;
-
-import java.util.Arrays;
 
 public class Main {
 
@@ -44,7 +42,7 @@ public class Main {
         for (short i = 0; i < maxNumber; i++) {
             t[i] = i;
         }
-        arraySortingItself array = new ArrayInsert(t);
+        arraySortingItself array = new ArrayInsertInBeg(t);
 
         for (int j1 = 0; j1 < 200; j1++) {
             System.out.println(array.getDelta(chances));

@@ -1,12 +1,11 @@
 package Array;
 
-import java.util.ArrayList;
 
-public class ArrayInsert implements arraySortingItself{
+public class ArrayInsertInBeg implements arraySortingItself{
     MyList values;
     private int length;
 
-    public ArrayInsert(short[] initial) {
+    public ArrayInsertInBeg(short[] initial) {
         values = new MyList();
         length = initial.length;
         for (short i: initial) {
@@ -56,18 +55,16 @@ public class ArrayInsert implements arraySortingItself{
     public short search(short key){
         MyList.element current = values.first;
         try {
-            while (current != null) {
-                if (current.value == key) {
-                    current.previous.next = current.next;
-                    current.next.previous = current.previous;
-                    values.first.previous = current;
-                    current.previous = null;
-                    current.next = values.first;
-                    values.first = current;
-                    return current.value;
-                }
+            while (current.value != key) {
                 current = current.next;
             }
+            current.previous.next = current.next;
+            current.next.previous = current.previous;
+            values.first.previous = current;
+            current.previous = null;
+            current.next = values.first;
+            values.first = current;
+            return current.value;
         }
         catch (Exception ignored){}
         if (current == null){
