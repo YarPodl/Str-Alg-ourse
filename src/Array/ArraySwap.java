@@ -2,7 +2,7 @@ package Array;
 
 public class ArraySwap implements arraySortingItself{
     public short[] values;
-    private int shift = 1;
+    private int shift = 3;
 
 
     public int getLength(){

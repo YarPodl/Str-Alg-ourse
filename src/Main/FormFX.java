@@ -1,38 +1,32 @@
 package Main;
 
-import Array.ArrayInsert;
-import Array.ArraySwap;
 import Array.Chances;
 import Array.arraySortingItself;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.util.regex.Pattern;
 
 public class FormFX extends Application {
 
-    final static int count = 1000000;
-    final static short maxNumber = 10000;
+    private final static short maxNumber = 10000;
 
-
-
+    private static int countOfTact = 100;
+    private static int lengthOfTact = 100000;
+    private static Thread thread;
 
 
 
@@ -45,24 +39,48 @@ public class FormFX extends Application {
 
         primaryStage.setTitle("Самосортирующиеся структуры данных");
 
-        LineChart<Number, Number> chart = new LineChart<>(new NumberAxis(), new NumberAxis());
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(0, 35000000, 2500000);
+        xAxis.setLabel ("Число запросов, тыс");
+        LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
         chart.setTitle("График зависимости дельты от числа запросов");
         chart.setCreateSymbols(false);
         chart.setPrefSize(600, 600);
-        XYChart.Series series = new XYChart.Series();
-        //series.setName("");
-        ObservableList<XYChart.Data> dates = FXCollections.observableArrayList();
-        series.setData(dates);
-        chart.getData().add(series);
+
 
 
         Pane pane = new VBox();
-        Pane controlPane = new HBox(20);
+        Pane controlPane = new HBox(10);
+
 
         ComboBox comboBox = new ComboBox();
         controlPane.getChildren().add(comboBox);
-        comboBox.getItems().addAll("Обмен элементов", "Сдвиг элемента");
+        comboBox.getItems().addAll("Обмен элементов", "Вставка в начало");
         comboBox.getSelectionModel().select(0);
+
+        Pattern pattern = Pattern.compile("\\d{0,8}");
+        TextField textFieldTacts = new TextField("100"){{
+            textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!pattern.matcher(newValue).matches()) {
+                    setText(oldValue);
+                }
+                try {
+                    countOfTact = Integer.parseInt(getText());
+                } catch (NumberFormatException ignored) {
+                }
+            });
+        }};
+        TextField textFieldCount = new TextField("100000"){{
+            textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!pattern.matcher(newValue).matches()) {
+                    setText(oldValue);
+                }
+                try {
+                    lengthOfTact = Integer.parseInt(getText());
+                } catch (NumberFormatException ignored) {
+                }
+            });
+        }};
 
 
 
@@ -71,62 +89,107 @@ public class FormFX extends Application {
 
 
         class requests extends Task{
+            private requests(LineChart<Number, Number> chart, Button buttonStart, Button buttonCancel) {
+                super();
+                this.chart = chart;
+                this.buttonStart = buttonStart;
+                this.buttonCancel = buttonCancel;
+            }
+
+            private LineChart<Number, Number> chart;
+            private Button buttonStart;
+            private Button buttonCancel;
             @Override
             public Void call() {
+                buttonStart.setDisable(true);
+                buttonCancel.setDisable(false);
                 Chances chances = new Chances(maxNumber);
                 short[] t = new short[maxNumber];
                 for (short i = 0; i < maxNumber; i++) {
                     t[i] = i;
                 }
-                arraySortingItself arraySwap = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex());
+                arraySortingItself array = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex());
+
+
+                XYChart.Series series = new XYChart.Series();
+                ObservableList<XYChart.Data> dates = FXCollections.observableArrayList();
+                series.setData(dates);
                 Platform.runLater(() -> {
-                    dates.clear();
-                    dates.add(new XYChart.Data(0, arraySwap.getDelta(chances)));
+                    series.setName(Integer.toString(chart.getData().size() + 1));
+                    chart.getData().add(series);
+                    dates.add(new XYChart.Data(0, array.getDelta(chances)));
                 });
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                for (int j1 = 1; j1 < 100; j1++) {
+                final int requestsToThousands = lengthOfTact/1000;
+                for (int j1 = 1; j1 < countOfTact; j1++) {
 
-                    for (int i = 0; i < 1000; i++) {
-                        arraySwap.search(chances.nextNumber());
-
+                    if (Thread.interrupted()) {
+                        buttonStart.setDisable(false);
+                        buttonCancel.setDisable(true);
+                        break;
                     }
-                    int delta = arraySwap.getDelta(chances);
-                    int finalJ1 = j1;
+                    for (int i = 0; i < lengthOfTact; i++) {
+                        array.search(chances.nextNumber());
+                    }
+                    int delta = array.getDelta(chances);
+                    int finalJ1 = j1 * requestsToThousands;
                     Platform.runLater(()-> dates.add(new XYChart.Data(finalJ1, delta)));
 
                 }
+                buttonStart.setDisable(false);
+                buttonCancel.setDisable(true);
                 return null;
-                /*
-                final int max = 1000000;
-                for (int i=1; i<=max; i++) {
-                    if (isCancelled()) {
-                        break;
-                    }
-                    updateProgress(i, max);
-                }
-                */
-
             }
         }
 
 
 
+        Button buttonStart = new Button("Запустить"){{
+            setDefaultButton(true);
+
+        }};
+        Button buttonCancel = new Button("Остановить"){{
+            setCancelButton(true);
+        }};
+        Button buttonClear = new Button("Очистить");
+
+        buttonStart.setOnAction((event)-> {
+            thread = new Thread(new requests(chart, buttonStart, buttonCancel));
+            thread.start();
+        });
+        buttonCancel.setOnAction((event)-> {
+            thread.interrupt();
+        });
+        buttonClear.setOnAction((event)-> {
+            thread.interrupt();
+            chart.getData().clear();
+        });
 
 
-        Button button = new Button("Запуск");
-        controlPane.getChildren().add(button);
+        controlPane.getChildren().add(buttonStart);
+        controlPane.getChildren().add(buttonCancel);
+        controlPane.getChildren().add(buttonClear);
+        controlPane.getChildren().add( new VBox(){{
+            getChildren().add(new Label("Количество тактов"));
+            getChildren().add(textFieldTacts);
+        }});
+        controlPane.getChildren().add(new VBox(){{
+            getChildren().add(new Label("Количество запросов в такте"));
+            getChildren().add(textFieldCount);
+        }});
+
         controlPane.setPadding(new Insets(20, 20, 10, 20));
-        button.setOnAction((event)-> new Thread(new requests()).start());
         pane.getChildren().add(controlPane);
         pane.getChildren().add(chart);
-        Scene scene = new Scene(pane, 600, 600);
+        Scene scene = new Scene(pane, 1000, 600);
         primaryStage.setScene(scene);
 
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event -> {
+            if ((thread != null) && thread.isAlive()){
+                thread.interrupt();
+            }
+        });
 
 
 
