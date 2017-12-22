@@ -42,7 +42,7 @@ public class FormFX extends Application {
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis(0, 35000000, 2500000);
-        xAxis.setLabel ("Число запросов, тыс");
+        xAxis.setLabel ("Число запросов, ед");
         LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
         chart.setTitle("График зависимости дельты от числа запросов");
         chart.setCreateSymbols(false);
@@ -52,11 +52,20 @@ public class FormFX extends Application {
 
         Pane pane = new VBox();
         Pane controlPane = new HBox(10);
+        Pane resultPane = new HBox(10);
 
+
+        Label resultLabel = new Label();
+        resultPane.getChildren().add(resultLabel);
 
         ComboBox comboBox = new ComboBox();
         controlPane.getChildren().add(comboBox);
-        comboBox.getItems().addAll("Обмен элементов", "Вставка в начало");
+        comboBox.getItems().addAll("Обмен элементов",
+                "Вставка в начало",
+                "Комбинированный",
+                "C изменяемым сдвигом",
+                "Наилучший"
+        );
         comboBox.getSelectionModel().select(0);
 
         Pattern pattern = Pattern.compile("\\d{0,8}");
@@ -113,6 +122,7 @@ public class FormFX extends Application {
             private LineChart<Number, Number> chart;
             private Button buttonStart;
             private Button buttonCancel;
+            private int prevDelta;
             @Override
             public Void call() {
                 buttonStart.setDisable(true);
@@ -124,6 +134,7 @@ public class FormFX extends Application {
                 }
                 arraySortingItself array = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex(), param);
 
+                prevDelta = array.getDelta(chances);
 
                 XYChart.Series series = new XYChart.Series();
                 ObservableList<XYChart.Data> dates = FXCollections.observableArrayList();
@@ -131,23 +142,31 @@ public class FormFX extends Application {
                 Platform.runLater(() -> {
                     series.setName(Integer.toString(chart.getData().size() + 1));
                     chart.getData().add(series);
-                    dates.add(new XYChart.Data(0, array.getDelta(chances)));
+                    dates.add(new XYChart.Data(0, prevDelta));
                 });
                 final int requestsToThousands = lengthOfTact/1000;
-                for (int j1 = 1; j1 < countOfTact; j1++) {
+
+                for (int j = 1; j < countOfTact; j++) {
 
                     if (Thread.interrupted()) {
-                        buttonStart.setDisable(false);
-                        buttonCancel.setDisable(true);
                         break;
                     }
                     for (int i = 0; i < lengthOfTact; i++) {
                         array.search(chances.nextNumber());
                     }
                     int delta = array.getDelta(chances);
-                    int finalJ1 = j1 * requestsToThousands;
+                    int finalJ1 = j * lengthOfTact;
                     Platform.runLater(()-> dates.add(new XYChart.Data(finalJ1, delta)));
-
+                    /*if ((delta - prevDelta) > 20 ){
+                        Platform.runLater(()-> resultLabel.setText(
+                                "Минимальная дельта: " +
+                                Integer.toString(delta) +
+                                ",  количество: " +
+                                Integer.toString(finalJ1)
+                        ));
+                        break;
+                    }
+                    prevDelta = delta;*/
                 }
                 buttonStart.setDisable(false);
                 buttonCancel.setDisable(true);
@@ -198,6 +217,7 @@ public class FormFX extends Application {
         controlPane.setPadding(new Insets(20, 20, 10, 20));
         pane.getChildren().add(controlPane);
         pane.getChildren().add(chart);
+        pane.getChildren().add(resultPane);
         Scene scene = new Scene(pane, 1000, 600);
         primaryStage.setScene(scene);
 

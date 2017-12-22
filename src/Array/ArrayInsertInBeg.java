@@ -8,12 +8,21 @@ public class ArrayInsertInBeg implements arraySortingItself{
     public ArrayInsertInBeg(short[] initial) {
         values = new MyList();
         length = initial.length;
-        for (short i: initial) {
-            values.add(i);
+        for (int i = 0; i < length; i++) {
+            values.add(initial[i]);
         }
 
     }
 
+    public short[] getData(){
+        short t[] = new short[length];
+        MyList.element element = values.first;
+        for (int i = 0; i < length; i++) {
+            t[i] = element.value;
+            element = element.next;
+        }
+        return t;
+    }
 
     public int getLength(){
         return length;
@@ -53,13 +62,18 @@ public class ArrayInsertInBeg implements arraySortingItself{
     }
 
     public short search(short key){
+
         MyList.element current = values.first;
         try {
             while (current.value != key) {
                 current = current.next;
             }
             current.previous.next = current.next;
-            current.next.previous = current.previous;
+            if (current.next != null) {
+                current.next.previous = current.previous;
+            } else {
+                values.last = current.previous;
+            }
             values.first.previous = current;
             current.previous = null;
             current.next = values.first;

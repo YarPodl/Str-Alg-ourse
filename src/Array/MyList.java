@@ -1,6 +1,6 @@
 package Array;
 
-public class MyList {
+class MyList {
 
 
     public class element{

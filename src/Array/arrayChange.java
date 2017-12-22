@@ -1,8 +1,9 @@
 package Array;
 
-public class ArraySwap implements arraySortingItself{
+public class arrayChange implements arraySortingItself{
     public short[] values;
-    private int shift = 3;
+    private int shift = 1000;
+    private int prevDelta = Integer.MAX_VALUE;
 
 
     public int getLength(){
@@ -19,6 +20,10 @@ public class ArraySwap implements arraySortingItself{
         for (int i = 0; i < values.length; i++) {
             delta += Math.abs(i - chances.ideal[values[i]]);
         }
+        if ((prevDelta - delta < 20) && (shift != 1)){
+            shift /= 2;
+        }
+        prevDelta = delta;
         return delta;
     }
 
@@ -28,11 +33,11 @@ public class ArraySwap implements arraySortingItself{
     }
 
 
-    public ArraySwap(short[] initial, int shift) {
+    public arrayChange(short[] initial, int shift) {
         values = initial.clone();
         this.shift = shift;
     }
-    public ArraySwap(short[] initial) {
+    public arrayChange(short[] initial) {
         values = initial.clone();
     }
 
