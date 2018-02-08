@@ -13,6 +13,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -48,9 +49,18 @@ public class FormFX extends Application {
         chart.setCreateSymbols(false);
         chart.setPrefSize(600, 600);
 
-        TableView tableView = new TableView();
-        TableColumn<String, Integer> tableColumn = new TableColumn<>("Название");
-        tableView.getColumns().add(tableColumn);
+
+
+        TableView<XYChart.Data> tableView = new TableView<>();
+
+        TableColumn<XYChart.Data, Integer> tableColumn1 = new TableColumn<>("Число запросов");
+        tableColumn1.setCellValueFactory(new PropertyValueFactory<>("XValue"));
+        tableView.getColumns().add(tableColumn1);
+
+        TableColumn<XYChart.Data, Integer> tableColumn2 = new TableColumn<>("Дельта");
+        tableColumn2.setCellValueFactory(new PropertyValueFactory<>("YValue"));
+        tableView.getColumns().add(tableColumn2);
+
 
         TabPane tabPane = new TabPane(new Tab("График", chart), new Tab("Таблица", tableView));
 
@@ -140,21 +150,27 @@ public class FormFX extends Application {
                 }
                 arraySortingItself array = arraySortingItself.createArray.create(t, comboBox.getSelectionModel().getSelectedIndex(), param);
 
+                String name = Integer.toString(chart.getData().size() + 1)
+                        + " "
+                        + comboBox.getItems().get(comboBox.getSelectionModel().getSelectedIndex());
+
                 prevDelta = array.getDelta(chances);
 
                 XYChart.Series series = new XYChart.Series();
+                /*TableColumn<String, Integer> tableColumn = new TableColumn<>(name);
+                tableView.getColumns().add(tableColumn);*/
                 ObservableList<XYChart.Data> dates = FXCollections.observableArrayList();
+                tableView.setItems(dates);
                 series.setData(dates);
                 Platform.runLater(() -> {
-                    series.setName(Integer.toString(chart.getData().size() + 1)
-                        + " "
-                        + comboBox.getItems().get(comboBox.getSelectionModel().getSelectedIndex()));
+                    series.setName(name);
+                    //tableView.getColumns().add(new TableColumn<String, Integer>(name));
                     chart.getData().add(series);
                     dates.add(new XYChart.Data(0, prevDelta));
                 });
                 boolean sost = true;
 
-                for (int j = 1; j < countOfTact; j++) {
+                for (int j = 1; j <= countOfTact; j++) {
 
                     if (Thread.interrupted()) {
                         break;
