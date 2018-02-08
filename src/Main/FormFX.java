@@ -48,6 +48,11 @@ public class FormFX extends Application {
         chart.setCreateSymbols(false);
         chart.setPrefSize(600, 600);
 
+        TableView tableView = new TableView();
+        TableColumn<String, Integer> tableColumn = new TableColumn<>("Название");
+        tableView.getColumns().add(tableColumn);
+
+        TabPane tabPane = new TabPane(new Tab("График", chart), new Tab("Таблица", tableView));
 
 
         Pane pane = new VBox();
@@ -60,11 +65,12 @@ public class FormFX extends Application {
 
         ComboBox comboBox = new ComboBox();
         controlPane.getChildren().add(comboBox);
-        comboBox.getItems().addAll("Обмен элементов",
+        comboBox.getItems().addAll(
+                "Обмен элементов",
                 "Вставка в начало",
                 "Комбинированный",
                 "C изменяемым сдвигом",
-                "Наилучший"
+                "Совмещенный"
         );
         comboBox.getSelectionModel().select(0);
 
@@ -122,7 +128,7 @@ public class FormFX extends Application {
             private LineChart<Number, Number> chart;
             private Button buttonStart;
             private Button buttonCancel;
-            private int prevDelta;
+            private int prevDelta = Integer.MAX_VALUE;
             @Override
             public Void call() {
                 buttonStart.setDisable(true);
@@ -140,11 +146,13 @@ public class FormFX extends Application {
                 ObservableList<XYChart.Data> dates = FXCollections.observableArrayList();
                 series.setData(dates);
                 Platform.runLater(() -> {
-                    series.setName(Integer.toString(chart.getData().size() + 1));
+                    series.setName(Integer.toString(chart.getData().size() + 1)
+                        + " "
+                        + comboBox.getItems().get(comboBox.getSelectionModel().getSelectedIndex()));
                     chart.getData().add(series);
                     dates.add(new XYChart.Data(0, prevDelta));
                 });
-                final int requestsToThousands = lengthOfTact/1000;
+                boolean sost = true;
 
                 for (int j = 1; j < countOfTact; j++) {
 
@@ -157,16 +165,19 @@ public class FormFX extends Application {
                     int delta = array.getDelta(chances);
                     int finalJ1 = j * lengthOfTact;
                     Platform.runLater(()-> dates.add(new XYChart.Data(finalJ1, delta)));
-                    /*if ((delta - prevDelta) > 20 ){
-                        Platform.runLater(()-> resultLabel.setText(
+                    if (((delta - prevDelta) > 40) && sost){
+                        Platform.runLater(()-> {
+                            /*resultLabel.setText(
                                 "Минимальная дельта: " +
                                 Integer.toString(delta) +
                                 ",  количество: " +
-                                Integer.toString(finalJ1)
-                        ));
-                        break;
+                                Integer.toString(finalJ1));*/
+                            //series.setName(series.getName() + ": d = " + Integer.toString(prevDelta));
+
+                        });
+                        sost = false;
                     }
-                    prevDelta = delta;*/
+                    prevDelta = delta;
                 }
                 buttonStart.setDisable(false);
                 buttonCancel.setDisable(true);
@@ -216,7 +227,7 @@ public class FormFX extends Application {
 
         controlPane.setPadding(new Insets(20, 20, 10, 20));
         pane.getChildren().add(controlPane);
-        pane.getChildren().add(chart);
+        pane.getChildren().add(tabPane);
         pane.getChildren().add(resultPane);
         Scene scene = new Scene(pane, 1000, 600);
         primaryStage.setScene(scene);
