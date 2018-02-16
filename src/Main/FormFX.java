@@ -28,7 +28,7 @@ public class FormFX extends Application {
     private static int countOfTact = 100;
     private static int lengthOfTact = 100000;
     private static Thread thread;
-    private static int shift;
+    private static int shift = 1;
 
 
 
