@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.util.regex.Pattern;
@@ -42,7 +43,7 @@ public class FormFX extends Application {
         primaryStage.setTitle("Самосортирующиеся структуры данных");
 
         final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(0, 35000000, 2500000);
+        final NumberAxis yAxis = new NumberAxis(0, 3500, 250);
         xAxis.setLabel ("Число запросов, ед");
         LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
         chart.setTitle("График зависимости дельты от числа запросов");
@@ -62,7 +63,17 @@ public class FormFX extends Application {
         tableView.getColumns().add(tableColumn2);
 
 
-        TabPane tabPane = new TabPane(new Tab("График", chart), new Tab("Таблица", tableView));
+
+
+        ListView<String> listView = new ListView<>();
+        ObservableList <String> items = FXCollections.observableArrayList ();
+        listView.setItems (items);
+        listView.setStyle("-fx-font-size: 14pt");
+
+
+        TabPane tabPane = new TabPane(new Tab("График", chart)
+                , new Tab("Таблица", tableView)
+                , new Tab("Характеристики", listView));
 
 
         Pane pane = new VBox();
@@ -154,7 +165,7 @@ public class FormFX extends Application {
                         + " "
                         + comboBox.getItems().get(comboBox.getSelectionModel().getSelectedIndex());
 
-                prevDelta = array.getDelta(chances);
+                prevDelta = array.getDelta(chances) / maxNumber;
 
                 XYChart.Series series = new XYChart.Series();
                 /*TableColumn<String, Integer> tableColumn = new TableColumn<>(name);
@@ -168,7 +179,7 @@ public class FormFX extends Application {
                     chart.getData().add(series);
                     dates.add(new XYChart.Data(0, prevDelta));
                 });
-                boolean sost = true;
+                int sost = 0;
 
                 for (int j = 1; j <= countOfTact; j++) {
 
@@ -178,20 +189,26 @@ public class FormFX extends Application {
                     for (int i = 0; i < lengthOfTact; i++) {
                         array.search(chances.nextNumber());
                     }
-                    int delta = array.getDelta(chances);
+                    int delta = array.getDelta(chances) / maxNumber;
                     int finalJ1 = j * lengthOfTact;
                     Platform.runLater(()-> dates.add(new XYChart.Data(finalJ1, delta)));
-                    if (((delta - prevDelta) > 40) && sost){
-                        Platform.runLater(()-> {
+                    if (((delta - prevDelta) > 0) && sost < 4){
+                        if (sost > 2) {
+                            Platform.runLater(() -> {
+                                items.add(name
+                                        + ":\tМинимальная дельта:\t"
+                                        + Integer.toString(delta)
+                                        + ",\tколичество запросов:\t"
+                                        + Integer.toString(finalJ1));
                             /*resultLabel.setText(
                                 "Минимальная дельта: " +
                                 Integer.toString(delta) +
                                 ",  количество: " +
                                 Integer.toString(finalJ1));*/
-                            //series.setName(series.getName() + ": d = " + Integer.toString(prevDelta));
-
-                        });
-                        sost = false;
+                                //series.setName(series.getName() + ": d = " + Integer.toString(prevDelta));
+                            });
+                        }
+                        sost++;
                     }
                     prevDelta = delta;
                 }
@@ -222,6 +239,7 @@ public class FormFX extends Application {
         buttonClear.setOnAction((event)-> {
             thread.interrupt();
             chart.getData().clear();
+            items.clear();
         });
 
 

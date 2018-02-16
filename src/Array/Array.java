@@ -30,7 +30,7 @@ public class Array implements arraySortingItself {
     @Override
     public int getDelta(Chances chances) {
         int delta = array.getDelta(chances);
-        if ((sost) && (prevDelta - delta < 20)){
+        if ((sost) && (prevDelta - delta < 0)){
             array = new ArraySwap(array.getData(), shift);
             sost = false;
         }

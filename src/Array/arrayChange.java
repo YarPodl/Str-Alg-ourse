@@ -20,7 +20,7 @@ public class arrayChange implements arraySortingItself{
         for (int i = 0; i < values.length; i++) {
             delta += Math.abs(i - chances.ideal[values[i]]);
         }
-        if ((prevDelta - delta < 20) && (shift != 1)){
+        if ((prevDelta - delta < 0) && (shift != 1)){
             shift /= 2;
         }
         prevDelta = delta;

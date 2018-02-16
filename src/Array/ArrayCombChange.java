@@ -5,6 +5,7 @@ public class ArrayCombChange implements arraySortingItself {
     private int prevDelta = Integer.MAX_VALUE;
     private int shift = 500;
     private boolean sost = true;
+    private int sostNumber = 0;
 
 
     public ArrayCombChange(short[] initial, int shift){
@@ -33,8 +34,8 @@ public class ArrayCombChange implements arraySortingItself {
     @Override
     public int getDelta(Chances chances) {
         int delta = array.getDelta(chances);
-        if ((sost) && (prevDelta - delta < 20)){
-            array = new arrayChange(array.getData(), 500);
+        if ((sost) && (prevDelta - delta < 0)){
+            array = new arrayChange(array.getData(), shift);
             sost = false;
         }
         prevDelta = delta;
