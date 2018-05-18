@@ -1,12 +1,16 @@
 package Array;
 
 public class ArraySwap implements arraySortingItself{
-    public short[] values;
-    private int shift = 3;
+    public short[] values;  // массив, содержащий элементы
+    private int shift = 3;  // сдвиг
+    private int countCmp = 0;
 
 
     public int getLength(){
         return values.length;
+    }
+    public int getCountCmp(){
+        return countCmp;
     }
 
     @Override
@@ -43,32 +47,15 @@ public class ArraySwap implements arraySortingItself{
             while (key != values[i]){
                 ++i;
             }
+            countCmp = i;
             short temp = values[i - shift];
             values[i - shift] = values[i];
             values[i] = temp;
         }
         catch (Exception ignored){}
         if (i >= values.length){
-            return -1;      // если элемент не найден
+            return Short.MIN_VALUE;      // если элемент не найден
         }
         return values[i];   // если найденый элемент - близко к началу
-    }
-    public long testSearch(short key){
-        long time = System.nanoTime();
-        int i = 0;
-        try {
-            while (key != values[i]){
-                ++i;
-            }
-            short temp = values[i - 1];
-            values[i - 1] = values[i];
-            values[i] = temp;
-            return values[i];
-        }
-        catch (Exception e){
-        }
-        finally {
-            return System.nanoTime() - time;
-        }
     }
 }

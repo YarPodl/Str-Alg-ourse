@@ -4,9 +4,10 @@ class MyList {
 
 
     public class element{
-        short value;
-        element next;
-        element previous;
+        short value;		// значение
+        element next;	    // ссылка на следующий элемент
+        element previous;	// ссылка на предыдущий элемент
+
 
         public element(short value, element next, element previous) {
             this.value = value;
@@ -15,8 +16,9 @@ class MyList {
         }
     }
 
-    public element first;
-    public element last;
+    public element first;	// первый элемент списка
+    public element last;	// последний элемент списка
+
 
     public MyList() {
         first = last = null;

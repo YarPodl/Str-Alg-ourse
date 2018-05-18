@@ -4,6 +4,7 @@ package Array;
 public class ArrayInsertInBeg implements arraySortingItself{
     MyList values;
     private int length;
+    private int countCmp = 0;
 
     public ArrayInsertInBeg(short[] initial) {
         values = new MyList();
@@ -26,6 +27,9 @@ public class ArrayInsertInBeg implements arraySortingItself{
 
     public int getLength(){
         return length;
+    }
+    public int getCountCmp(){
+        return countCmp;
     }
 
     public int getDelta(Chances chances){
@@ -65,9 +69,12 @@ public class ArrayInsertInBeg implements arraySortingItself{
 
         MyList.element current = values.first;
         try {
+            int i = 0;
             while (current.value != key) {
+                i++;
                 current = current.next;
             }
+            countCmp = i;
             current.previous.next = current.next;
             if (current.next != null) {
                 current.next.previous = current.previous;

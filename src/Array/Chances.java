@@ -21,7 +21,7 @@ public class Chances {
     }
     */
 
-    public short values[];  // хранит вероятнсти
+    public short values[];  // хранит вероятности
     public short[] ideal;   // идеальные места для цифр
     public int sums[];      // интервалы для вероятности
     public short maxNumber; // максимально допустимое число
@@ -37,10 +37,10 @@ public class Chances {
         Random random = new Random();
         values = new short[maxNumber];
         sums = new int[maxNumber];
-        values[0] = (short) random.nextInt(maxNumber);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
+        values[0] = (short) random.nextInt(Short.MAX_VALUE - 5);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
         sums[0] = values[0];
         for (int i = 1; i < values.length; i++) {
-            values[i] = (short) random.nextInt(maxNumber);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
+            values[i] = (short) random.nextInt(Short.MAX_VALUE - 5);  // <= Integer.MAX_VALUE / Short.MAX_VALUE
             sums[i] += sums[i - 1] + values[i];
         }
         createIdeal();

@@ -1,13 +1,13 @@
 package Array;
 
-public class Array implements arraySortingItself {
+public class ArrayComb implements arraySortingItself {
     private arraySortingItself array;
     private int prevDelta = Integer.MAX_VALUE;
     private int shift;
     private boolean sost = true;
 
 
-    public Array(short[] initial, int shift){
+    public ArrayComb(short[] initial, int shift){
         this.shift = shift;
         array = new ArrayInsertInBeg(initial);
     }
@@ -20,6 +20,9 @@ public class Array implements arraySortingItself {
     @Override
     public int getLength() {
         return array.getLength();
+    }
+    public int getCountCmp(){
+        return array.getCountCmp();
     }
 
     @Override
